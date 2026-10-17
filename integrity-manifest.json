@@ -1,7 +1,7 @@
 {
   "manifestVersion": "1.1.0",
   "mission": "QMOOSA-AMM-07",
-  "generatedAt": "2026-10-17T17:30:00Z",
+  "generatedAt": "2026-10-17T17:36:00Z",
   "packages": [
     {
       "name": "@qmoosa/amm-protocol",
@@ -27,9 +27,9 @@
       "name": "@qmoosa/amm-sdk",
       "repository": "elon00/qmoosa-amm-sdk",
       "version": "1.1.0",
-      "sourceCommit": "61d453316714b12e59c0a32713cb8e7920c3f4ba",
+      "sourceCommit": "6859bfec4cf5bb791bc9d7b582f258f7bf25dfe2",
       "archivePath": "packages/qmoosa-amm-sdk-1.1.0.tgz",
-      "sha256": "d6443a87af000b30a3e9cec3f8e3af47b45d69f1c7feecb2502c6e2fe62a0f2d",
+      "sha256": "5fcd65c141f85b94277c38ebe9027f3313b67abcda71f9c65e94510a7404887c",
       "ciStatus": "PASS",
       "testResult": "12/12 passing"
     }

@@ -1,6 +1,6 @@
 {
   "mission": "QMOOSA-AMM-07",
-  "timestamp": "2026-10-17T12:29:03.478Z",
+  "timestamp": "2026-10-17T12:39:17.201Z",
   "network": {
     "chainId": 31337,
     "rpcUrl": "http://127.0.0.1:8545",
@@ -8,36 +8,36 @@
   },
   "contracts": {
     "Factory": {
-      "address": "0x851356ae760d987e095750cceb3bc6014560891c",
+      "address": "0x4c5859f0f772848b2d91f1d83e2fe57935348029",
       "codeLength": 20318
     },
     "USDC": {
-      "address": "0xf5059a5d33d5853360d16c683c16e67980206f36",
+      "address": "0x1291be112d480055dafd8a610b7d1e203891c274",
       "codeLength": 4168
     },
     "ETH": {
-      "address": "0x95401dc811bb5740090279ba06cfa8fcf6113778",
+      "address": "0x5f3f1dbd7b74c6b46e8c44f98792a1daf8d69154",
       "codeLength": 4168
     },
     "Router": {
-      "address": "0x998abeb3e57409262ae5b751f60747921b33613e",
+      "address": "0xb7278a61aa25c888815afc32ad3cc52ff24fe575",
       "codeLength": 12972
     },
     "Pair": {
-      "address": "0x754093f07410D75696235830F0f7ED088116A3E4"
+      "address": "0x2aC9185c100F5CE6bB002f6584CEC94B83fe60f2"
     }
   },
   "deployments": {
     "initialLiquidity": {
-      "txHash": "0xb8a4c40446d488ef6bdf396ddcd89fbaeaebbabb81e68c41c59ce4609009f12e",
-      "gasUsed": "234992",
-      "reserve0": "25000000000000000000",
-      "reserve1": "50000000000"
+      "txHash": "0x4b6ece78ecf0bfaf451d392477797a7148d3df1ffb0fa0fd3d306cc327c532f8",
+      "gasUsed": "234960",
+      "reserve0": "50000000000",
+      "reserve1": "25000000000000000000"
     },
     "swap": {
-      "txHash": "0x2e3b258f100bde88445ec39910fd1bd7518fd6653044be07b804ba9cc3fb0e3d",
-      "blockNumber": 47,
-      "gasUsed": "96929",
+      "txHash": "0xd06d95c34a167aa636472f4e993365846038c0836dacd3119d2dc28dbb10c86b",
+      "blockNumber": 60,
+      "gasUsed": "96877",
       "userBalancesBefore": {
         "tokenA": "950000000000",
         "tokenB": "975000000000000000000"
@@ -47,12 +47,12 @@
         "tokenB": "975488754240445516402"
       },
       "pairReservesBefore": {
-        "reserve0": "25000000000000000000",
-        "reserve1": "50000000000"
+        "reserve0": "50000000000",
+        "reserve1": "25000000000000000000"
       },
       "pairReservesAfter": {
-        "reserve0": "24511245759554483598",
-        "reserve1": "51000000000"
+        "reserve0": "51000000000",
+        "reserve1": "24511245759554483598"
       }
     }
   },
