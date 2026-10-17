@@ -7,9 +7,9 @@
       "name": "@qmoosa/amm-protocol",
       "repository": "elon00/qmoosa-amm-protocol",
       "version": "1.1.0",
-      "sourceCommit": "2f1c2868bd5aaab00a7edd8209d53204054324e6",
+      "sourceCommit": "0c2db43eb647d3ab18d8c4272459015d59c22590",
       "archivePath": "packages/qmoosa-amm-protocol-1.1.0.tgz",
-      "sha256": "a2750dcb3b2ce5209ae90abe4667f24314b0c2268151b9b58b079ab621adc9b6",
+      "sha256": "6a3b08e15034490aab17613f11b1cb62ba862fba84dbb8461ada92c0acf8e83d",
       "ciStatus": "PASS",
       "testResult": "8/8 Unit + 16/16 Foundry passing"
     },
