@@ -1,16 +1,19 @@
 {
   "name": "@qmoosa/amm-tests",
   "version": "1.1.0",
-  "description": "Multi-repository integration and adversarial verification harness for Qmoosa AMM",
+  "description": "Multi-repository integration, source integrity, and adversarial verification harness for Qmoosa AMM",
   "type": "module",
   "scripts": {
-    "test": "node --test tests/integration.test.mjs",
-    "lint": "node -e \"console.log('Tests lint passed')\""
+    "test:integrity": "node scripts/verify-source-integrity.mjs",
+    "test:integration": "node --test tests/integration.test.mjs",
+    "test:negative": "node --test tests/negative-control.test.mjs",
+    "test": "npm run test:integrity && npm run test:integration && npm run test:negative",
+    "lint": "node --check tests/integration.test.mjs tests/negative-control.test.mjs scripts/verify-source-integrity.mjs"
   },
   "dependencies": {
-    "@qmoosa/amm-engine": "file:packages/qmoosa-amm-engine-1.1.0.tgz",
-    "@qmoosa/amm-protocol": "file:packages/qmoosa-amm-protocol-1.1.0.tgz",
-    "@qmoosa/amm-sdk": "file:packages/qmoosa-amm-sdk-1.1.0.tgz"
+    "@qmoosa/amm-engine": "file:./packages/qmoosa-amm-engine-1.1.0.tgz",
+    "@qmoosa/amm-protocol": "file:./packages/qmoosa-amm-protocol-1.1.0.tgz",
+    "@qmoosa/amm-sdk": "file:./packages/qmoosa-amm-sdk-1.1.0.tgz"
   },
   "keywords": [
     "amm",
