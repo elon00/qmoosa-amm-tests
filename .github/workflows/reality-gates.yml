@@ -17,6 +17,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
-      - name: Run Full Reality Verification Suite (Tiers 1-4)
-        run: node run_all_tests.js
+      - name: Install dependencies with strict lockfile
+        run: npm ci
+
+      - name: Run Full Real Cross-Repository Integration & Adversarial Suite
+        run: npm test
