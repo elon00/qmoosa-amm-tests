@@ -17,10 +17,11 @@ import {
 
 import {
   QmoosaAmmClient,
-  MockWalletAdapter,
   WalletNotConnectedError,
   UnsupportedChainAdapterError
 } from "@qmoosa/amm-sdk";
+import { MockWalletAdapter } from "@qmoosa/amm-sdk/testing";
+
 
 describe("Cross-Repository Integration & Reality Test Suite", () => {
   const creator = "0xCreatorAccount111";
@@ -30,7 +31,11 @@ describe("Cross-Repository Integration & Reality Test Suite", () => {
   test("1. Real Protocol & Real Engine Initialization", () => {
     // Protocol-level validations
     assert.doesNotThrow(() => validateFeeBps(30));
-    const [t0, t1] = canonicalizeTokenPair("USDC", "ETH");
+    const [t0Evm, t1Evm] = canonicalizeTokenPair("USDC", "ETH"); // Default EVM case-folded
+    assert.equal(t0Evm, "eth");
+    assert.equal(t1Evm, "usdc");
+
+    const [t0, t1] = canonicalizeTokenPair("USDC", "ETH", "CASE_SENSITIVE_CANONICAL");
     assert.equal(t0, "ETH");
     assert.equal(t1, "USDC");
 

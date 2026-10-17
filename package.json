@@ -8,9 +8,9 @@
     "lint": "node -e \"console.log('Tests lint passed')\""
   },
   "dependencies": {
-    "@qmoosa/amm-protocol": "file:./packages/qmoosa-amm-protocol-1.1.0.tgz",
-    "@qmoosa/amm-engine": "file:./packages/qmoosa-amm-engine-1.1.0.tgz",
-    "@qmoosa/amm-sdk": "file:./packages/qmoosa-amm-sdk-1.1.0.tgz"
+    "@qmoosa/amm-engine": "file:packages/qmoosa-amm-engine-1.1.0.tgz",
+    "@qmoosa/amm-protocol": "file:packages/qmoosa-amm-protocol-1.1.0.tgz",
+    "@qmoosa/amm-sdk": "file:packages/qmoosa-amm-sdk-1.1.0.tgz"
   },
   "keywords": [
     "amm",
