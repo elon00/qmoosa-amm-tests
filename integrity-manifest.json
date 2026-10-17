@@ -1,37 +1,37 @@
 {
-  "manifestVersion": "1.0.0",
-  "mission": "QMOOSA-AMM-05C",
-  "generatedAt": "2026-10-17T15:19:00Z",
+  "manifestVersion": "1.1.0",
+  "mission": "QMOOSA-05D-06",
+  "generatedAt": "2026-10-17T16:26:00Z",
   "packages": [
     {
       "name": "@qmoosa/amm-protocol",
       "repository": "elon00/qmoosa-amm-protocol",
       "version": "1.1.0",
-      "sourceCommit": "6189b99f2ae6d480b336fbf814905b3fb47dafcf",
+      "sourceCommit": "2f1c2868bd5aaab00a7edd8209d53204054324e6",
       "archivePath": "packages/qmoosa-amm-protocol-1.1.0.tgz",
-      "sha256": "3ad448bed37cea29d6b1918d67374807f4e82f2173a0aa3b2e6e37ff393af84d",
+      "sha256": "a2750dcb3b2ce5209ae90abe4667f24314b0c2268151b9b58b079ab621adc9b6",
       "ciStatus": "PASS",
-      "testResult": "7/7 passing"
+      "testResult": "8/8 Unit + 16/16 Foundry passing"
     },
     {
       "name": "@qmoosa/amm-engine",
       "repository": "elon00/qmoosa-amm-engine",
       "version": "1.1.0",
-      "sourceCommit": "4386bb9f1f006fa480a4bd95d79f80d36c10fc8f",
+      "sourceCommit": "dd0bcb1ce2b9656f9a845089e0d6cc6bb18b3b80",
       "archivePath": "packages/qmoosa-amm-engine-1.1.0.tgz",
-      "sha256": "564c6483437951d64a6c3c7d282fc7a86cd6b342ff41e36dabe1ebd0ca70fe7f",
+      "sha256": "c4dcd6d0399fc873ceff04000c8d9b85a04f6b3fee0e6088b679aed399378f77",
       "ciStatus": "PASS",
-      "testResult": "7/7 passing"
+      "testResult": "8/8 passing"
     },
     {
       "name": "@qmoosa/amm-sdk",
       "repository": "elon00/qmoosa-amm-sdk",
       "version": "1.1.0",
-      "sourceCommit": "289ce36439cef8b0fa46e40a079e29dee8a93e90",
+      "sourceCommit": "3d9ec1a29b6a15d9eab1a9d39144a43dcea84751",
       "archivePath": "packages/qmoosa-amm-sdk-1.1.0.tgz",
-      "sha256": "3003e985c25fe58d394ed07048ecec0ae8cb2f02cf4a72ca6651ad15bb2972ea",
+      "sha256": "74fac6c3b96c8c950bf3b7abd4414a4067be0097b9571c898d0474e000abcef1",
       "ciStatus": "PASS",
-      "testResult": "10/10 passing"
+      "testResult": "11/11 passing"
     }
   ]
 }

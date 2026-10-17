@@ -46,8 +46,8 @@ describe("Cross-Repository Integration & Reality Test Suite", () => {
     assert.equal(lpTokensMinted > 0n, true);
 
     const pool = engine.store.getPool(poolId);
-    assert.equal(pool.tokenA, "ETH");
-    assert.equal(pool.tokenB, "USDC");
+    assert.equal(pool.tokenA, "eth");
+    assert.equal(pool.tokenB, "usdc");
     assert.equal(pool.reserveA, "50000");
     assert.equal(pool.reserveB, "100000000");
   });

@@ -14,20 +14,22 @@ if (!fs.existsSync(manifestPath)) {
 }
 
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
-console.log(`=== QMOOSA CROSS-REPOSITORY SOURCE INTEGRITY VERIFIER ===`);
+console.log(`================================================================`);
+console.log(`=== QMOOSA SUPPLY-CHAIN INTEGRITY & SOURCE PROVENANCE GATE ===`);
 console.log(`Mission: ${manifest.mission}`);
-console.log(`Manifest Generated: ${manifest.generatedAt}\n`);
+console.log(`Manifest Generated: ${manifest.generatedAt}`);
+console.log(`================================================================\n`);
 
-let failed = false;
+let archiveIntegrityFailed = false;
+let sourceProvenanceBlocked = false;
+let sourceProvenanceFailed = false;
 
+console.log(`--- [GATE 1: ARCHIVE INTEGRITY VERIFICATION] ---`);
 for (const pkg of manifest.packages) {
-  console.log(`Checking package: ${pkg.name} (${pkg.repository})...`);
-
-  // 1. Verify archive exists and SHA-256 matches
   const archivePath = path.join(rootDir, pkg.archivePath);
   if (!fs.existsSync(archivePath)) {
-    console.error(`  [FAIL] Archive missing: ${pkg.archivePath}`);
-    failed = true;
+    console.error(`  [FAIL] Pinned package archive missing: ${pkg.archivePath}`);
+    archiveIntegrityFailed = true;
     continue;
   }
 
@@ -36,42 +38,87 @@ for (const pkg of manifest.packages) {
   const expectedHash = pkg.sha256.toLowerCase();
 
   if (actualHash !== expectedHash) {
-    console.error(`  [FAIL] Archive SHA-256 mismatch!`);
+    console.error(`  [FAIL] Hash mismatch for ${pkg.name}!`);
     console.error(`         Expected: ${expectedHash}`);
     console.error(`         Actual:   ${actualHash}`);
-    failed = true;
+    archiveIntegrityFailed = true;
   } else {
-    console.log(`  [PASS] Archive SHA-256 verified (${actualHash.substring(0, 16)}...)`);
+    console.log(`  [PASS] ${pkg.name}@${pkg.version} archive SHA-256 verified (${actualHash.substring(0, 16)}...)`);
   }
+}
 
-  // 2. If sibling workspace repository exists locally, verify HEAD commit matches sourceCommit
+if (archiveIntegrityFailed) {
+  console.error("\nRESULT: ARCHIVE_INTEGRITY_FAIL");
+  process.exit(1);
+} else {
+  console.log("\nRESULT: ARCHIVE_INTEGRITY_PASS\n");
+}
+
+console.log(`--- [GATE 2: SOURCE PROVENANCE VERIFICATION] ---`);
+for (const pkg of manifest.packages) {
   const repoBaseName = pkg.repository.split("/")[1];
   const siblingPath = path.resolve(rootDir, "..", repoBaseName);
 
-  if (fs.existsSync(siblingPath) && fs.existsSync(path.join(siblingPath, ".git"))) {
-    try {
-      const currentHead = execSync("git rev-parse HEAD", { cwd: siblingPath, encoding: "utf8" }).trim();
-      if (currentHead.toLowerCase() !== pkg.sourceCommit.toLowerCase()) {
-        console.error(`  [FAIL] Source revision mismatch for ${pkg.repository}!`);
-        console.error(`         Declared in manifest: ${pkg.sourceCommit}`);
-        console.error(`         Current HEAD commit:  ${currentHead}`);
-        failed = true;
-      } else {
-        console.log(`  [PASS] Sibling repository HEAD commit verified: ${currentHead.substring(0, 7)}`);
-      }
-    } catch (err) {
-      console.warn(`  [WARN] Could not inspect local git commit in ${siblingPath}: ${err.message}`);
-    }
-  } else {
-    console.log(`  [INFO] Running in hermetic mode (no sibling source checkout present). Pinned package verified.`);
+  if (!fs.existsSync(siblingPath) || !fs.existsSync(path.join(siblingPath, ".git"))) {
+    console.log(`  [BLOCKED] Sibling repository checkout unavailable for ${pkg.repository}.`);
+    console.log(`            Cannot prove build derivation from source in hermetic single-repo checkout.`);
+    sourceProvenanceBlocked = true;
+    continue;
   }
 
-  console.log();
+  try {
+    const currentHead = execSync("git rev-parse HEAD", { cwd: siblingPath, encoding: "utf8" }).trim();
+    const declaredCommit = pkg.sourceCommit.trim();
+
+    if (currentHead.toLowerCase() !== declaredCommit.toLowerCase()) {
+      console.error(`  [FAIL] Provenance mismatch for ${pkg.repository}!`);
+      console.error(`         Declared source commit: ${declaredCommit}`);
+      console.error(`         Workspace HEAD commit:  ${currentHead}`);
+      sourceProvenanceFailed = true;
+      continue;
+    }
+
+    // Verify package identity from source package.json
+    const sourcePkgJsonPath = path.join(siblingPath, "package.json");
+    if (!fs.existsSync(sourcePkgJsonPath)) {
+      console.error(`  [FAIL] Missing package.json in ${siblingPath}`);
+      sourceProvenanceFailed = true;
+      continue;
+    }
+    const sourcePkg = JSON.parse(fs.readFileSync(sourcePkgJsonPath, "utf8"));
+    if (sourcePkg.name !== pkg.name || sourcePkg.version !== pkg.version) {
+      console.error(`  [FAIL] Package identity mismatch in ${sourcePkgJsonPath}!`);
+      console.error(`         Expected ${pkg.name}@${pkg.version}, found ${sourcePkg.name}@${sourcePkg.version}`);
+      sourceProvenanceFailed = true;
+      continue;
+    }
+
+    // Verify build outputs exist and match exports
+    if (sourcePkg.main && !fs.existsSync(path.join(siblingPath, sourcePkg.main))) {
+      console.error(`  [FAIL] Build artifact entrypoint missing: ${sourcePkg.main}`);
+      sourceProvenanceFailed = true;
+      continue;
+    }
+
+    console.log(`  [PASS] ${pkg.repository} provenance established at ${currentHead.substring(0, 7)}`);
+  } catch (err) {
+    console.error(`  [FAIL] Git inspection error in ${siblingPath}: ${err.message}`);
+    sourceProvenanceFailed = true;
+  }
 }
 
-if (failed) {
-  console.error("FAIL: Cross-repository source integrity verification FAILED.");
+if (sourceProvenanceFailed) {
+  console.error("\nRESULT: SOURCE_PROVENANCE_FAIL");
   process.exit(1);
+} else if (sourceProvenanceBlocked) {
+  console.log("\nRESULT: SOURCE_PROVENANCE_BLOCKED (Hermetic execution without sibling checkouts)");
 } else {
-  console.log("SUCCESS: All declared packages match their exact commit provenance and package hashes.");
+  console.log("\nRESULT: SOURCE_PROVENANCE_PASS (100% Source derivation verified)");
 }
+
+console.log(`\n================================================================`);
+console.log(`STATUS SUMMARY:`);
+console.log(`  - Archive Hash Integrity: ARCHIVE_INTEGRITY_PASS`);
+console.log(`  - Source Provenance:      ${sourceProvenanceBlocked ? "SOURCE_PROVENANCE_BLOCKED" : "SOURCE_PROVENANCE_PASS"}`);
+console.log(`  - Pinned Tarball Count:   ${manifest.packages.length} packages`);
+console.log(`================================================================\n`);
