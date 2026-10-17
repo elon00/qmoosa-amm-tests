@@ -1,0 +1,22 @@
+{
+  "name": "@qmoosa/amm-tests",
+  "version": "1.0.0",
+  "description": "Adversarial test suite, fuzzing harness, regression gates, and automated CI for Qmoosa AMM",
+  "scripts": {
+    "test": "node run_all_tests.js",
+    "test:invariants": "node run_all_tests.js --filter=invariants",
+    "test:fuzz": "node run_all_tests.js --filter=fuzz",
+    "test:adversarial": "node run_all_tests.js --filter=adversarial",
+    "test:integration": "node run_all_tests.js --filter=integration"
+  },
+  "keywords": [
+    "amm",
+    "tests",
+    "fuzzing",
+    "invariants",
+    "adversarial",
+    "qmoosa"
+  ],
+  "author": "elon00",
+  "license": "MIT"
+}
