@@ -19,10 +19,18 @@ jobs:
           node-version: 20
           cache: 'npm'
 
+      - name: Install Foundry (Anvil)
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
       - name: Install dependencies with strict lockfile
         run: npm ci
 
-      - name: Run Source & Package Integrity Gate
+      - name: Run Source & Package Integrity Gate (Archive Mode)
+        run: npm run verify:archive
+
+      - name: Run Source & Package Integrity Gate (Full Gate)
         run: npm run test:integrity
 
       - name: Run Real Cross-Repository Integration Suite
@@ -30,6 +38,9 @@ jobs:
 
       - name: Run Negative Control & Adversarial Defense Suite
         run: npm run test:negative
+
+      - name: Run Local Anvil Deployment & Settlement Verification Gate
+        run: npm run verify:anvil
 
       - name: Run Static Syntax & Lint Verification
         run: npm run lint

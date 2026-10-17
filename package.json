@@ -7,13 +7,18 @@
     "test:integrity": "node scripts/verify-source-integrity.mjs",
     "test:integration": "node --test tests/integration.test.mjs",
     "test:negative": "node --test tests/negative-control.test.mjs",
+    "verify:anvil": "node scripts/verify-anvil-pipeline.mjs",
+    "verify:archive": "node scripts/verify-source-integrity.mjs --mode=archive",
+    "verify:source": "node scripts/verify-source-integrity.mjs --mode=source",
+    "verify:current-head": "node scripts/verify-source-integrity.mjs --mode=current-head",
     "test": "npm run test:integrity && npm run test:integration && npm run test:negative",
-    "lint": "node --check tests/integration.test.mjs tests/negative-control.test.mjs scripts/verify-source-integrity.mjs"
+    "lint": "node --check tests/integration.test.mjs tests/negative-control.test.mjs scripts/verify-source-integrity.mjs scripts/verify-anvil-pipeline.mjs"
   },
   "dependencies": {
     "@qmoosa/amm-engine": "file:packages/qmoosa-amm-engine-1.1.0.tgz",
     "@qmoosa/amm-protocol": "file:packages/qmoosa-amm-protocol-1.1.0.tgz",
-    "@qmoosa/amm-sdk": "file:packages/qmoosa-amm-sdk-1.1.0.tgz"
+    "@qmoosa/amm-sdk": "file:packages/qmoosa-amm-sdk-1.1.0.tgz",
+    "viem": "^2.57.7"
   },
   "keywords": [
     "amm",

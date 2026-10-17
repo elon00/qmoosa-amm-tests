@@ -1,0 +1,83 @@
+{
+  "mission": "QMOOSA-AMM-07",
+  "timestamp": "2026-10-17T12:29:03.478Z",
+  "network": {
+    "chainId": 31337,
+    "rpcUrl": "http://127.0.0.1:8545",
+    "isLoopback": true
+  },
+  "contracts": {
+    "Factory": {
+      "address": "0x851356ae760d987e095750cceb3bc6014560891c",
+      "codeLength": 20318
+    },
+    "USDC": {
+      "address": "0xf5059a5d33d5853360d16c683c16e67980206f36",
+      "codeLength": 4168
+    },
+    "ETH": {
+      "address": "0x95401dc811bb5740090279ba06cfa8fcf6113778",
+      "codeLength": 4168
+    },
+    "Router": {
+      "address": "0x998abeb3e57409262ae5b751f60747921b33613e",
+      "codeLength": 12972
+    },
+    "Pair": {
+      "address": "0x754093f07410D75696235830F0f7ED088116A3E4"
+    }
+  },
+  "deployments": {
+    "initialLiquidity": {
+      "txHash": "0xb8a4c40446d488ef6bdf396ddcd89fbaeaebbabb81e68c41c59ce4609009f12e",
+      "gasUsed": "234992",
+      "reserve0": "25000000000000000000",
+      "reserve1": "50000000000"
+    },
+    "swap": {
+      "txHash": "0x2e3b258f100bde88445ec39910fd1bd7518fd6653044be07b804ba9cc3fb0e3d",
+      "blockNumber": 47,
+      "gasUsed": "96929",
+      "userBalancesBefore": {
+        "tokenA": "950000000000",
+        "tokenB": "975000000000000000000"
+      },
+      "userBalancesAfter": {
+        "tokenA": "949000000000",
+        "tokenB": "975488754240445516402"
+      },
+      "pairReservesBefore": {
+        "reserve0": "25000000000000000000",
+        "reserve1": "50000000000"
+      },
+      "pairReservesAfter": {
+        "reserve0": "24511245759554483598",
+        "reserve1": "51000000000"
+      }
+    }
+  },
+  "pipelineSteps": [
+    {
+      "step": "NETWORK_VERIFICATION",
+      "status": "PASS",
+      "chainId": 31337
+    }
+  ],
+  "adversarialTests": [
+    {
+      "test": "SLIPPAGE_PROTECTION",
+      "status": "PASS",
+      "result": "FAILED_STATUS_REVERT"
+    },
+    {
+      "test": "DEADLINE_PROTECTION",
+      "status": "PASS",
+      "result": "FAILED_STATUS_REVERT"
+    },
+    {
+      "test": "NON_LOOPBACK_PROTECTION",
+      "status": "PASS",
+      "result": "REJECTED"
+    }
+  ]
+}

@@ -1,17 +1,17 @@
 {
   "manifestVersion": "1.1.0",
-  "mission": "QMOOSA-05D-06",
-  "generatedAt": "2026-10-17T16:26:00Z",
+  "mission": "QMOOSA-AMM-07",
+  "generatedAt": "2026-10-17T17:30:00Z",
   "packages": [
     {
       "name": "@qmoosa/amm-protocol",
       "repository": "elon00/qmoosa-amm-protocol",
       "version": "1.1.0",
-      "sourceCommit": "0c2db43eb647d3ab18d8c4272459015d59c22590",
+      "sourceCommit": "387b45b224e5af717985a6517c4bd03532fa2bca",
       "archivePath": "packages/qmoosa-amm-protocol-1.1.0.tgz",
-      "sha256": "6a3b08e15034490aab17613f11b1cb62ba862fba84dbb8461ada92c0acf8e83d",
+      "sha256": "62a111d1dc8cfd2b0949507c21cbd10cf8afd61662ca812f199090599145c157",
       "ciStatus": "PASS",
-      "testResult": "8/8 Unit + 16/16 Foundry passing"
+      "testResult": "8/8 Unit + 28/28 Foundry passing"
     },
     {
       "name": "@qmoosa/amm-engine",
@@ -27,11 +27,11 @@
       "name": "@qmoosa/amm-sdk",
       "repository": "elon00/qmoosa-amm-sdk",
       "version": "1.1.0",
-      "sourceCommit": "3d9ec1a29b6a15d9eab1a9d39144a43dcea84751",
+      "sourceCommit": "61d453316714b12e59c0a32713cb8e7920c3f4ba",
       "archivePath": "packages/qmoosa-amm-sdk-1.1.0.tgz",
-      "sha256": "74fac6c3b96c8c950bf3b7abd4414a4067be0097b9571c898d0474e000abcef1",
+      "sha256": "d6443a87af000b30a3e9cec3f8e3af47b45d69f1c7feecb2502c6e2fe62a0f2d",
       "ciStatus": "PASS",
-      "testResult": "11/11 passing"
+      "testResult": "12/12 passing"
     }
   ]
 }

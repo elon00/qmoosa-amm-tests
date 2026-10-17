@@ -14,61 +14,93 @@ if (!fs.existsSync(manifestPath)) {
 }
 
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+
+// Parse CLI flags: --mode=archive | --mode=source | --mode=current-head
+const modeArg = process.argv.find((arg) => arg.startsWith("--mode="));
+const mode = modeArg ? modeArg.split("=")[1].trim().toLowerCase() : "all";
+
 console.log(`================================================================`);
 console.log(`=== QMOOSA SUPPLY-CHAIN INTEGRITY & SOURCE PROVENANCE GATE ===`);
-console.log(`Mission: ${manifest.mission}`);
-console.log(`Manifest Generated: ${manifest.generatedAt}`);
+console.log(`Mission:  ${manifest.mission}`);
+console.log(`Mode:     ${mode.toUpperCase()}`);
+console.log(`Manifest: Generated ${manifest.generatedAt}`);
 console.log(`================================================================\n`);
 
 let archiveIntegrityFailed = false;
 let sourceProvenanceBlocked = false;
 let sourceProvenanceFailed = false;
 
-console.log(`--- [GATE 1: ARCHIVE INTEGRITY VERIFICATION] ---`);
-for (const pkg of manifest.packages) {
-  const archivePath = path.join(rootDir, pkg.archivePath);
-  if (!fs.existsSync(archivePath)) {
-    console.error(`  [FAIL] Pinned package archive missing: ${pkg.archivePath}`);
-    archiveIntegrityFailed = true;
-    continue;
+// GATE 1: ARCHIVE INTEGRITY VERIFICATION
+if (mode === "archive" || mode === "all" || mode === "source") {
+  console.log(`--- [GATE 1: ARCHIVE INTEGRITY VERIFICATION] ---`);
+  for (const pkg of manifest.packages) {
+    const archivePath = path.join(rootDir, pkg.archivePath);
+    if (!fs.existsSync(archivePath)) {
+      console.error(`  [FAIL] Pinned package archive missing: ${pkg.archivePath}`);
+      archiveIntegrityFailed = true;
+      continue;
+    }
+
+    const fileBytes = fs.readFileSync(archivePath);
+    const actualHash = crypto.createHash("sha256").update(fileBytes).digest("hex").toLowerCase();
+    const expectedHash = pkg.sha256.toLowerCase();
+
+    if (actualHash !== expectedHash) {
+      console.error(`  [FAIL] Hash mismatch for ${pkg.name}!`);
+      console.error(`         Expected: ${expectedHash}`);
+      console.error(`         Actual:   ${actualHash}`);
+      archiveIntegrityFailed = true;
+    } else {
+      console.log(`  [PASS] ${pkg.name}@${pkg.version} archive SHA-256 verified (${actualHash.substring(0, 16)}...)`);
+    }
   }
 
-  const fileBytes = fs.readFileSync(archivePath);
-  const actualHash = crypto.createHash("sha256").update(fileBytes).digest("hex").toLowerCase();
-  const expectedHash = pkg.sha256.toLowerCase();
-
-  if (actualHash !== expectedHash) {
-    console.error(`  [FAIL] Hash mismatch for ${pkg.name}!`);
-    console.error(`         Expected: ${expectedHash}`);
-    console.error(`         Actual:   ${actualHash}`);
-    archiveIntegrityFailed = true;
+  if (archiveIntegrityFailed) {
+    console.error("\nRESULT: ARCHIVE_INTEGRITY_FAIL");
+    process.exit(1);
   } else {
-    console.log(`  [PASS] ${pkg.name}@${pkg.version} archive SHA-256 verified (${actualHash.substring(0, 16)}...)`);
+    console.log("\nRESULT: ARCHIVE_INTEGRITY_PASS\n");
+  }
+
+  if (mode === "archive") {
+    console.log(`================================================================`);
+    console.log(`STATUS SUMMARY (ARCHIVE MODE):`);
+    console.log(`  - Archive Hash Integrity: ARCHIVE_INTEGRITY_PASS`);
+    console.log(`  - Pinned Tarball Count:   ${manifest.packages.length} packages`);
+    console.log(`================================================================\n`);
+    process.exit(0);
   }
 }
 
-if (archiveIntegrityFailed) {
-  console.error("\nRESULT: ARCHIVE_INTEGRITY_FAIL");
-  process.exit(1);
-} else {
-  console.log("\nRESULT: ARCHIVE_INTEGRITY_PASS\n");
-}
-
+// GATE 2: SOURCE PROVENANCE VERIFICATION
 console.log(`--- [GATE 2: SOURCE PROVENANCE VERIFICATION] ---`);
 for (const pkg of manifest.packages) {
   const repoBaseName = pkg.repository.split("/")[1];
   const siblingPath = path.resolve(rootDir, "..", repoBaseName);
 
   if (!fs.existsSync(siblingPath) || !fs.existsSync(path.join(siblingPath, ".git"))) {
-    console.log(`  [BLOCKED] Sibling repository checkout unavailable for ${pkg.repository}.`);
-    console.log(`            Cannot prove build derivation from source in hermetic single-repo checkout.`);
-    sourceProvenanceBlocked = true;
+    if (mode === "source") {
+      console.error(`  [FAIL] Sibling repository checkout required but missing: ${pkg.repository}`);
+      sourceProvenanceFailed = true;
+    } else {
+      console.log(`  [BLOCKED] Sibling repository checkout unavailable for ${pkg.repository}.`);
+      console.log(`            Cannot prove build derivation from source in hermetic single-repo checkout.`);
+      sourceProvenanceBlocked = true;
+    }
     continue;
   }
 
   try {
     const currentHead = execSync("git rev-parse HEAD", { cwd: siblingPath, encoding: "utf8" }).trim();
     const declaredCommit = pkg.sourceCommit.trim();
+
+    if (mode === "current-head") {
+      console.log(`  [INFO] ${pkg.repository}:`);
+      console.log(`         Current HEAD:    ${currentHead}`);
+      console.log(`         Declared Commit: ${declaredCommit}`);
+      console.log(`         Aligned:         ${currentHead.toLowerCase() === declaredCommit.toLowerCase() ? "YES" : "NO"}`);
+      continue;
+    }
 
     if (currentHead.toLowerCase() !== declaredCommit.toLowerCase()) {
       console.error(`  [FAIL] Provenance mismatch for ${pkg.repository}!`);
@@ -105,6 +137,13 @@ for (const pkg of manifest.packages) {
     console.error(`  [FAIL] Git inspection error in ${siblingPath}: ${err.message}`);
     sourceProvenanceFailed = true;
   }
+}
+
+if (mode === "current-head") {
+  console.log(`\n================================================================`);
+  console.log(`CURRENT-HEAD INSPECTION COMPLETE`);
+  console.log(`================================================================\n`);
+  process.exit(0);
 }
 
 if (sourceProvenanceFailed) {
